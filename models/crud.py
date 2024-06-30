@@ -15,3 +15,6 @@ def create_payment(db: Session, payment: schemas.PaymentRequest):
 
 def get_payment(db: Session, payment_id: int):
     return db.query(models.Payment).filter(models.Payment.id == payment_id).first()
+
+def get_all_payments(db: Session):
+    return db.query(models.Payment).all()

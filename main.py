@@ -2,12 +2,11 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 import asyncio
 import uvicorn
-from datetime import datetime
 import models.crud as crud
 import models.schemas as schemas
-import models.simulate_bank as simulate_bank
 import models.models as models
 from database import SessionLocal, engine
+from typing import List
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -34,6 +33,13 @@ def read_payment(payment_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Payment not found")
     db_payment.card_number = "**** **** **** " + db_payment.card_number[-4:]  # Mask card number
     return db_payment
+
+@app.get("/payments/", response_model=List[schemas.PaymentResponse])
+def read_all_payments(db: Session = Depends(get_db)):
+    payments = crud.get_all_payments(db)
+    for payment in payments:
+        payment.card_number = "**** **** **** " + payment.card_number[-4:]  # Mask card number
+    return payments
 
 async def main():
     config = uvicorn.Config("main:app", port=5000, log_level="info")
