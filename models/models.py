@@ -5,6 +5,10 @@ from datetime import datetime
 Base = declarative_base()
 
 class Payment(Base):
+    '''
+    ! This is a model extending the sqlalchemy base model
+    Its purpose is to create the database table for payments
+    '''
     __tablename__ = "payments"
     id = Column(Integer, primary_key=True, index=True)
     card_number = Column(String, index=True)
