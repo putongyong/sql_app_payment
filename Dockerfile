@@ -1,14 +1,28 @@
-# Use the official Python base image
-FROM python:3.9-slim
+FROM python:3.9-alpine as build
 
-# Set the working directory in the container
+# Install dependencies
+RUN apk add --no-cache gcc musl-dev libffi-dev
+
+COPY ./requirements.txt /requirements.txt
+RUN python -m venv /pyvenv && \
+    /pyvenv/bin/pip install --upgrade pip && \
+    /pyvenv/bin/pip install -r /requirements.txt
+
+FROM python:3.9-alpine
+
+# Copy application code
+COPY . /app
+COPY --from=build /pyvenv /pyvenv
+
+# Set environment variable to use the virtual environment
+ENV VIRTUAL_ENV=/pyvenv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-
-# Install any necessary dependencies specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Expose port 5000
+EXPOSE 8000
 
 # Run main.py when the container launches
 CMD ["python", "main.py"]
+

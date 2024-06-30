@@ -42,7 +42,7 @@ def read_all_payments(db: Session = Depends(get_db)):
     return payments
 
 async def main():
-    config = uvicorn.Config("main:app", port=5000, log_level="info")
+    config = uvicorn.Config("main:app", host='0.0.0.0', port=8000, log_level="info")
     server = uvicorn.Server(config)
     await server.serve()
 
