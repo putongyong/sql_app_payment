@@ -4,6 +4,7 @@ FROM python:3.9-alpine as build
 RUN apk add --no-cache gcc musl-dev libffi-dev
 
 COPY ./requirements.txt /requirements.txt
+
 RUN python -m venv /pyvenv && \
     /pyvenv/bin/pip install --upgrade pip && \
     /pyvenv/bin/pip install -r /requirements.txt
