@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Query
 from sqlalchemy.orm import Session
 import asyncio
 import uvicorn
@@ -20,6 +20,10 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def get_home():
+    return {"message": "Welcome to the payment API"}
+
 @app.post("/payments/", response_model=schemas.PaymentResponse)
 def create_payment(payment: schemas.PaymentRequest, db: Session = Depends(get_db)):
     db_payment = crud.create_payment(db, payment)
@@ -34,8 +38,12 @@ def read_payment(payment_id: int, db: Session = Depends(get_db)):
     return db_payment
 
 @app.get("/payments/", response_model=List[schemas.PaymentResponse])
-def read_all_payments(db: Session = Depends(get_db)):
-    payments = crud.get_all_payments(db)
+def read_all_payments(
+    db: Session = Depends(get_db), 
+    offset: int = Query(0, ge=0),  # Default offset to 0
+    limit: int = Query(10, gt=0)   # Default limit to 10
+):
+    payments = crud.get_all_payments(db, offset=offset, limit=limit)
     for payment in payments:
         payment.card_number = "**** **** **** " + payment.card_number[-4:]  # Mask card number
     return payments

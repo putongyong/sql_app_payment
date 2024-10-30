@@ -4,4 +4,6 @@ docker run --rm -it -p 8000:8000 python-payment-app
 
 docker-compose up --build
 
+docker-compose down
+
 docker-compose up -d

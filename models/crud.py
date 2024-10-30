@@ -25,6 +25,6 @@ def get_payment(db: Session, payment_id: int):
     # get the data by payment id
     return db.query(models.Payment).filter(models.Payment.id == payment_id).first()
 
-def get_all_payments(db: Session):
-    # get all data
-    return db.query(models.Payment).all()
+def get_all_payments(db: Session, offset: int = 0, limit: int = 10):
+    # Fetch payments with pagination
+    return db.query(models.Payment).offset(offset).limit(limit).all()

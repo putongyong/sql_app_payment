@@ -12,10 +12,10 @@ services:
       - POSTGRES_PASSWORD=testpassword
       - POSTGRES_DB=testdb
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "testuser"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -d testdb -U testuser"]
+      interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   web:
     build: .
