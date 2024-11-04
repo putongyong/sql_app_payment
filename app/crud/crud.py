@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
-from . import models, schemas, simulate_bank
 from datetime import datetime
+from app.models import models
+from app.schemas import schemas
+from app.external import simulate_bank
 
 def create_payment(db: Session, payment: schemas.PaymentRequest):
     # get the input data and turning it into a dictionary
